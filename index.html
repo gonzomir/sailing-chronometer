@@ -22,6 +22,8 @@
 				var ch = document.getElementById('chronometer');
 				var cdt = null;
 				var cht = null;
+
+				var cp = false;
 				
 				function startcountdown(t){
 					if(cdt){
@@ -73,9 +75,15 @@
 							secleft = secleft - minleft * 60;
 							secleft = (secleft>9)?secleft:'0'+secleft;
 							minleft = (minleft>9)?minleft:'0'+minleft;
-							ch.innerHTML = minleft + ':' + secleft;
+							if(!cp){
+								ch.innerHTML = minleft + ':' + secleft;
+							}
 						},250
 					);
+				}
+
+				function pausechronometer(){
+					cp = !cp;
 				}
 
 				sb.onclick = function(){
@@ -90,11 +98,19 @@
 				
 				stb.onclick = function(){
 					startchronometer();
+					stb.onclick = function(){
+						pausechronometer();
+					};
+					this.innerHTML = 'pause';
 				};
 
 				ctb.onclick = function(){
 					clearTimeout(cht);
 					ch.innerHTML = '00:00';
+					stb.onclick = function(){
+						startchronometer();
+					};
+					stb.innerHTML = 'start';
 				};
 				
 					
@@ -115,7 +131,6 @@
 			menu {
 				display: block;
 				padding-bottom: 10px;
-				border-bottom: 1px solid #ccc;
 				text-align: center;
 			}
 			
@@ -134,8 +149,15 @@
 			}
 			section {
 				display: block;
+				height: 50vh;
 				margin: 0;
 				padding: 0;
+				-moz-box-sizing: border-box;
+				-webkit-box-sizing: border-box;
+				box-sizing: border-box;
+			}
+			section:first-child {
+				border-bottom: 1px solid #ccc;
 			}
 			h1 {
 				width: 0;
@@ -149,13 +171,11 @@
 					float: left;
 					width: 50%;
 					height: 100vh;
-					padding-top: 3em;
-					-moz-box-sizing: border-box;
-					-webkit-box-sizing: border-box;
-					box-sizing: border-box;
+					padding-top: 2em;
 				}
 
 				section:first-child {
+					border-bottom: none;
 					border-right: 1px solid #ccc;
 				}
 
