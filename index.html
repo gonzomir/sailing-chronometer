@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html manifest="sc.manifest">
+	<head>
+		<title>Sailing Chronometer</title>
+		<meta name="viewport" content="width=device-width, height=device-height" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<link rel="shortcut icon" href="icon_16.png" />
+		<link rel="apple-touch-icon" href="icon_64.png">
+		<link rel="apple-touch-icon-precomposed" sizes="114x114" href="icon_114.png">
+		<link rel="apple-touch-icon-precomposed" sizes="72x72" href="icon_72.png">
+		<link rel="apple-touch-icon-precomposed" href="icon_57.png">
+		<script>
+			window.onload = function(){
+			
+				var sb = document.getElementById('startcountdown');
+				var cb = document.getElementById('clearcountdown');
+
+				var stb = document.getElementById('startchronometer');
+				var ctb = document.getElementById('clearchronometer');
+
+				var cd = document.getElementById('countdown');
+				var ch = document.getElementById('chronometer');
+				var cdt = null;
+				var cht = null;
+				
+				function startcountdown(t){
+					if(cdt){
+						clearTimeout(cdt);
+					}
+					var s = new Date();
+					var starttime = s.getTime()/1000 + t;
+					cdt = setInterval(function(){
+							var n = new Date();
+							var now = n.getTime()/1000;
+							var secleft = Math.round(starttime - now);
+							if(secleft<0){
+								sb.innerHTML = '5 min';
+								clearTimeout(cdt);
+								return;
+							}
+							if(secleft == 4.5*60){
+								sb.innerHTML = '4 min';
+								sb.onclick = function(){
+									startcountdown(4*60);
+								};
+							}
+							if(secleft == 2*60){
+								sb.innerHTML = '1 min';
+								sb.onclick = function(){
+									startcountdown(60);
+								};
+							}
+							var minleft = Math.floor(secleft / 60);
+							secleft = secleft - minleft * 60;
+							secleft = (secleft>9)?secleft:'0'+secleft;
+							minleft = (minleft>9)?minleft:'0'+minleft;
+							cd.innerHTML = minleft + ':' + secleft;
+						},250
+					);
+				}
+
+				function startchronometer(){
+					if(cht){
+						clearTimeout(cht);
+					}
+					var s = new Date();
+					var starttime = s.getTime()/1000;
+					cht = setInterval(function(){
+							var n = new Date();
+							var now = n.getTime()/1000;
+							var secleft = Math.round(now - starttime);
+							var minleft = Math.floor(secleft / 60);
+							secleft = secleft - minleft * 60;
+							secleft = (secleft>9)?secleft:'0'+secleft;
+							minleft = (minleft>9)?minleft:'0'+minleft;
+							ch.innerHTML = minleft + ':' + secleft;
+						},250
+					);
+				}
+
+				sb.onclick = function(){
+					startcountdown(300);
+				};
+				
+				cb.onclick = function(){
+					clearTimeout(cdt);
+					cd.innerHTML = '05:00';
+					sb.innerHTML = '5 min';
+				};
+				
+				stb.onclick = function(){
+					startchronometer();
+				};
+
+				ctb.onclick = function(){
+					clearTimeout(cht);
+					ch.innerHTML = '00:00';
+				};
+				
+					
+			};
+		</script>
+		<style>
+			* {
+				margin: 0;
+				padding: 0;
+			}
+			
+			body {
+				padding: 0px;
+				background: #fff;
+				color: #000;
+			}
+			
+			menu {
+				display: block;
+				padding-bottom: 10px;
+				border-bottom: 1px solid #ccc;
+				text-align: center;
+			}
+			
+			button {
+				margin: 0 10px;
+				padding: 10px 15px;
+				font-weight: bold;
+				font-size: 2em;
+			}
+			
+			div {
+				padding: 10px 0;
+				text-align: center;
+				font-family: fixed;
+				font-size: 6em;
+			}
+
+		</style>
+	</head>
+	<body>
+		<div id="countdown">05:00</div>
+		<menu>
+			<button id="startcountdown">5 min</button>
+			<button id="clearcountdown">clear</button>
+		</menu>
+		<div id="chronometer">00:00</div>
+		<menu>
+			<button id="startchronometer">start</button>
+			<button id="clearchronometer">clear</button>
+		</menu>
+	</body>
+</html>
