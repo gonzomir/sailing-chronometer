@@ -32,6 +32,7 @@
 					}
 					var s = new Date();
 					var starttime = s.getTime()/1000 + t;
+					getScreenLock();
 					cdt = setInterval(function(){
 							var n = new Date();
 							var now = n.getTime()/1000;
@@ -68,6 +69,7 @@
 					}
 					var s = new Date();
 					var starttime = s.getTime()/1000;
+					getScreenLock();
 					cht = setInterval(function(){
 							var n = new Date();
 							var now = n.getTime()/1000;
@@ -87,6 +89,18 @@
 					cp = !cp;
 				}
 
+				function getScreenLock(){
+					if(navigator.requestWakeLock && !sl){
+						sl = navigator.requestWakeLock('screen');
+					}
+				}
+
+				function releaseScreenLock(){
+					if(navigator.requestWakeLock && sl){
+						sl.unlock();
+					}
+				}
+
 				sb.onclick = function(){
 					startcountdown(300);
 				};
@@ -95,6 +109,9 @@
 					clearTimeout(cdt);
 					cd.innerHTML = '05:00';
 					sb.innerHTML = '5 min';
+					if( !cht ){
+						releaseScreenLock();
+					}
 				};
 
 				stb.onclick = function(){
@@ -112,6 +129,9 @@
 						startchronometer();
 					};
 					stb.innerHTML = 'start';
+					if (!cdt) {
+						releaseScreenLock();
+					}
 				};
 
 			};
