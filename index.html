@@ -26,6 +26,8 @@
 
 				var cp = false;
 
+				var sl = null;
+
 				function startcountdown(t){
 					if(cdt){
 						clearTimeout(cdt);
@@ -39,16 +41,26 @@
 							var secleft = Math.round(starttime - now);
 							if(secleft<0){
 								sb.innerHTML = '5 min';
-								clearTimeout(cdt);
+								clearInterval(cdt);
+								sb.onclick = function(){
+									startcountdown(300);
+								};
+								releaseScreenLock();
 								return;
 							}
-							if(secleft == 4.5*60){
+							if(secleft < 5*60){
 								sb.innerHTML = '4 min';
 								sb.onclick = function(){
 									startcountdown(4*60);
 								};
 							}
-							if(secleft == 2*60){
+							if(secleft < 4*60){
+								sb.innerHTML = '2 min';
+								sb.onclick = function(){
+									startcountdown(120);
+								};
+							}
+							if(secleft < 3*60){
 								sb.innerHTML = '1 min';
 								sb.onclick = function(){
 									startcountdown(60);
@@ -65,7 +77,7 @@
 
 				function startchronometer(){
 					if(cht){
-						clearTimeout(cht);
+						clearInterval(cht);
 					}
 					var s = new Date();
 					var starttime = s.getTime()/1000;
@@ -106,8 +118,11 @@
 				};
 
 				cb.onclick = function(){
-					clearTimeout(cdt);
+					clearInterval(cdt);
 					cd.innerHTML = '05:00';
+					sb.onclick = function(){
+						startcountdown(300);
+					};
 					sb.innerHTML = '5 min';
 					if( !cht ){
 						releaseScreenLock();
@@ -123,7 +138,7 @@
 				};
 
 				ctb.onclick = function(){
-					clearTimeout(cht);
+					clearInterval(cht);
 					ch.innerHTML = '00:00';
 					stb.onclick = function(){
 						startchronometer();
