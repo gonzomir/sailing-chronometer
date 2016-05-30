@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html manifest="sc.manifest">
 	<head>
+		<meta charset="utf-8">
 		<title>Sailing Chronometer</title>
-		<meta name="viewport" content="width=device-width, height=device-height" />
+		<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
 		<meta name="apple-mobile-web-app-capable" content="yes" />
 		<link rel="shortcut icon" href="icon_16.png" />
 		<link rel="apple-touch-icon" href="icon_64.png">
@@ -11,7 +12,7 @@
 		<link rel="apple-touch-icon-precomposed" href="icon_57.png">
 		<script>
 			window.onload = function(){
-			
+
 				var sb = document.getElementById('startcountdown');
 				var cb = document.getElementById('clearcountdown');
 
@@ -24,7 +25,7 @@
 				var cht = null;
 
 				var cp = false;
-				
+
 				function startcountdown(t){
 					if(cdt){
 						clearTimeout(cdt);
@@ -57,7 +58,7 @@
 							secleft = (secleft>9)?secleft:'0'+secleft;
 							minleft = (minleft>9)?minleft:'0'+minleft;
 							cd.innerHTML = minleft + ':' + secleft;
-						},250
+						}, 250
 					);
 				}
 
@@ -89,13 +90,13 @@
 				sb.onclick = function(){
 					startcountdown(300);
 				};
-				
+
 				cb.onclick = function(){
 					clearTimeout(cdt);
 					cd.innerHTML = '05:00';
 					sb.innerHTML = '5 min';
 				};
-				
+
 				stb.onclick = function(){
 					startchronometer();
 					stb.onclick = function(){
@@ -112,8 +113,7 @@
 					};
 					stb.innerHTML = 'start';
 				};
-				
-					
+
 			};
 		</script>
 		<style>
@@ -125,18 +125,18 @@
 			html, body {
 				height: 100%;
 			}
-			
+
 			body {
 				padding: 0;
 				background: #fff;
 				color: #000;
 			}
-			
+
 			menu {
 				display: block;
 				text-align: center;
 			}
-			
+
 			button {
 				margin: 0;
 				padding: 0.5em .75em;
@@ -147,7 +147,7 @@
 			button:first-child {
 				margin-right: 1em;
 			}
-			
+
 			div {
 				padding: .15em 0;
 				text-align: center;
@@ -196,7 +196,7 @@
 				button {
 					font-size: 1.25em;
 				}
-				
+
 				div {
 					font-size: 5em;
 				}
