@@ -22,8 +22,51 @@
         	console.error(error);
         });
       }
+      function speak(text) {
+      	if ('speechSynthesis' in window) {
+	      	var msg = new SpeechSynthesisUtterance(text);
+	      	msg.volume = 1;
+	      	msg.rate = 1.5;
+	      	msg.voice = theVoice;
+	      	msg.onerror = function(e) {
+	      		console.error(e.error);
+	      	}
+			    window.speechSynthesis.speak(msg);
+			  }
+      }
+
+      var theVoice;
+
+      function setupSpeech(){
+      	if ('speechSynthesis' in window) {
+	      	var voices = speechSynthesis.getVoices(),
+	      			preferedLang = navigator.languages ? navigator.languages[0] : (navigator.language || navigator.userLanguage),
+	      			foundPrefered,
+	      			foundBritish,
+	      			foundAmerican;
+	      	voices.forEach(function(voice, i){
+	      		if( (voice.lang == preferedLang) && !foundPrefered ) {
+	      			foundPrefered = i;
+	      		}
+	      		if(voice.lang == "en-GB" && !foundBritish){
+	      			foundBritish = i;
+	      		}
+	      		else if( (voice.lang == "en-US" || voice.lang == "en") && !foundAmerican){
+	      			foundAmerican = i;
+	      		}
+	      	});
+	      	var the = foundPrefered || foundBritish || foundAmerican;
+		      theVoice = voices[the];
+	      }
+      }
 
 			window.onload = function(){
+
+				setupSpeech();
+
+      	if ('speechSynthesis' in window) {
+					window.speechSynthesis.onvoiceschanged = setupSpeech;
+				}
 
 				var sb = document.getElementById('startcountdown');
 				var cb = document.getElementById('clearcountdown');
@@ -80,10 +123,26 @@
 							}
 							var minleft = Math.floor(secleft / 60);
 							secleft = secleft - minleft * 60;
-							secleft = (secleft>9)?secleft:'0'+secleft;
-							minleft = (minleft>9)?minleft:'0'+minleft;
-							cd.innerHTML = minleft + ':' + secleft;
-						}, 250
+							var secleftStr = (secleft>9)?secleft:'0'+secleft;
+							var minleftStr = (minleft>9)?minleft:'0'+minleft;
+							cd.innerHTML = minleftStr + ':' + secleftStr;
+							var toSpeak = ((minleft > 0) ? minleft : '') + ((secleft != 0) ? ' ' + secleft : '');
+							if ( minleft > 1 && (secleft == 0 || secleft == 30) ) {
+								speak(toSpeak);
+							}
+							if ( minleft == 1 && ( secleft % 15 == 0 ) ) {
+								speak(toSpeak);
+							}
+							if ( minleft == 0 && ( secleft % 10 == 0 ) ) {
+								speak(toSpeak);
+							}
+							if ( minleft == 0 && secleft < 10  && secleft > 0 ) {
+								speak(secleft);
+							}
+							if ( minleft == 0 && secleft == 0 ) {
+								speak('START');
+							}
+						}, 1000
 					);
 				}
 
