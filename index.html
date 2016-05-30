@@ -85,7 +85,7 @@
 
 				function startcountdown(t){
 					if(cdt){
-						clearTimeout(cdt);
+						clearInterval(cdt);
 					}
 					var s = new Date();
 					var starttime = s.getTime()/1000 + t;
