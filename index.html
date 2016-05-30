@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html manifest="sc.manifest">
+<html>
 	<head>
 		<meta charset="utf-8">
 		<title>Sailing Chronometer</title>
@@ -10,7 +10,19 @@
 		<link rel="apple-touch-icon-precomposed" sizes="114x114" href="icon_114.png">
 		<link rel="apple-touch-icon-precomposed" sizes="72x72" href="icon_72.png">
 		<link rel="apple-touch-icon-precomposed" href="icon_57.png">
+		<link rel="manifest" href="manifest.json">
 		<script>
+
+      if ('serviceWorker' in navigator) {
+        // Override the default scope of '/' with './', so that the registration applies
+        // to the current directory and everything underneath it.
+        navigator.serviceWorker.register('sw.js', {scope: './'}).then(function(registration) {
+        	console.log('serviceWorker registered');
+        }).catch(function(error) {
+        	console.error(error);
+        });
+      }
+
 			window.onload = function(){
 
 				var sb = document.getElementById('startcountdown');
