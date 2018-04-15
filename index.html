@@ -273,19 +273,22 @@
 				font-family: fixed;
 				font-size: 6em;
 			}
+
 			section {
 				display: block;
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				align-items: center;
 				height: 50%;
 				height: 50vh;
 				margin: 0;
 				padding: 0;
 				padding-bottom: 1em;
-				-moz-box-sizing: border-box;
-				-webkit-box-sizing: border-box;
 				box-sizing: border-box;
 			}
-			section:first-child {
-				border-bottom: 1px solid #ccc;
+			section + section {
+				border-top: 1px solid #ccc;
 			}
 			h1 {
 				width: 0;
@@ -295,17 +298,20 @@
 
 			@media all and (orientation: landscape) {
 
-				section {
-					float: left;
-					width: 50%;
-					height: 100%;
-					height: 100vh;
-					padding-top: 1em;
+				body {
+					display: flex;
 				}
 
-				section:first-child {
-					border-bottom: none;
-					border-right: 1px solid #ccc;
+				section {
+					width: 50%;
+					width: 50vw;
+					height: 100%;
+					height: 100vh;
+				}
+
+				section + section {
+					border-top: none;
+					border-left: 1px solid #ccc;
 				}
 
 				menu {
