@@ -246,8 +246,8 @@
 
 			body {
 				padding: 0;
-				background: #fff;
-				color: #000;
+				background: #000;
+				color: #ff0;
 			}
 
 			menu {
@@ -257,13 +257,27 @@
 
 			button {
 				margin: 0;
-				padding: 0.5em .75em;
+				padding: 0.75em 1em;
 				font-weight: bold;
-				font-size: 1.5em;
+				font-size: 1.75em;
+				background-color: transparent;
+				border: 1px solid #ff0;
+				color: inherit;
 			}
 
-			button:first-child {
-				margin-right: 1em;
+			button:hover, button:focus {
+				color: #000;
+				background-color: #ff0;
+			}
+
+			button:active {
+				color: #000;
+				background-color: #ff0;
+				box-shadow: inset 0 0 .25em 0 rgba(0, 0, 0, .5);
+			}
+
+			button + button {
+				margin-left: 1em;
 			}
 
 			time {
@@ -288,7 +302,7 @@
 				box-sizing: border-box;
 			}
 			section + section {
-				border-top: 1px solid #ccc;
+				border-top: 1px solid;
 			}
 			h1 {
 				width: 0;
@@ -311,7 +325,7 @@
 
 				section + section {
 					border-top: none;
-					border-left: 1px solid #ccc;
+					border-left: 1px solid;
 				}
 
 				menu {
@@ -319,7 +333,7 @@
 				}
 
 				button {
-					font-size: 1.25em;
+					font-size: 1.5em;
 				}
 
 				time {
