@@ -13,58 +13,70 @@
 		<link rel="manifest" href="manifest.json">
 		<script>
 
-      if ('serviceWorker' in navigator) {
-        // Override the default scope of '/' with './', so that the registration applies
-        // to the current directory and everything underneath it.
-        navigator.serviceWorker.register('sw.js', {scope: './'}).then(function(registration) {
-        	console.log('serviceWorker registered');
-        }).catch(function(error) {
-        	console.error(error);
-        });
-      }
-      function speak(text) {
-      	if ('speechSynthesis' in window) {
-	      	var msg = new SpeechSynthesisUtterance(text);
-	      	msg.volume = 1;
-	      	msg.rate = 1.5;
-	      	msg.voice = theVoice;
-	      	msg.onerror = function(e) {
-	      		console.error(e.error);
-	      	}
-			    window.speechSynthesis.speak(msg);
-			  }
-      }
+			if ('serviceWorker' in navigator) {
+				// Override the default scope of '/' with './', so that the registration applies
+				// to the current directory and everything underneath it.
+				navigator.serviceWorker.register('sw.js', {scope: './'}).then(function(registration) {
+					console.log('serviceWorker registered');
+				}).catch(function(error) {
+					console.error(error);
+				});
+			}
 
-      var theVoice;
+			function speak(text, pitch) {
+				if ('speechSynthesis' in window) {
+					var msg = new SpeechSynthesisUtterance(text);
+					msg.volume = 1;
+					msg.rate = 1.25;
+					msg.voiceURI = theVoice.voiceURI;
+					msg.lang = theVoice.lang;
+					msg.pitch = pitch || 1;
+					msg.onerror = function(e) {
+						alert(e.error);
+						console.error(e.error);
+					}
+					console.log(msg);
+					window.speechSynthesis.speak(msg);
+				}
+			}
 
-      function setupSpeech(){
-      	if ('speechSynthesis' in window) {
-	      	var voices = speechSynthesis.getVoices(),
-	      			preferedLang = navigator.languages ? navigator.languages[0] : (navigator.language || navigator.userLanguage),
-	      			foundPrefered,
-	      			foundBritish,
-	      			foundAmerican;
-	      	voices.forEach(function(voice, i){
-	      		if( (voice.lang == preferedLang) && !foundPrefered ) {
-	      			foundPrefered = i;
-	      		}
-	      		if(voice.lang == "en-GB" && !foundBritish){
-	      			foundBritish = i;
-	      		}
-	      		else if( (voice.lang == "en-US" || voice.lang == "en") && !foundAmerican){
-	      			foundAmerican = i;
-	      		}
-	      	});
-	      	var the = foundPrefered || foundBritish || foundAmerican;
-		      theVoice = voices[the];
-	      }
-      }
+			var theVoice;
+
+			function setupSpeech(){
+				if (theVoice) return;
+				if ('speechSynthesis' in window) {
+					var voices = speechSynthesis.getVoices(),
+							preferedLang = navigator.languages ? navigator.languages[0] : (navigator.language || navigator.userLanguage),
+							foundPrefered,
+							foundBritish,
+							foundAmerican,
+							defaultLang;
+					console.log(voices);
+					voices.forEach(function(voice, i){
+						if( (voice.lang == preferedLang) && !foundPrefered ) {
+							foundPrefered = i;
+						}
+						if( (voice.lang == "en-GB" || voice.lang == "en_GB") && !foundBritish){
+							foundBritish = i;
+						}
+						else if( (voice.lang == "en-US" || voice.lang == "en_US" || voice.lang == "en") && !foundAmerican){
+							foundAmerican = i;
+						}
+						if(voice.default && !defaultLang){
+							defaultLang = i;
+						}
+					});
+					var the = foundPrefered || foundBritish || foundAmerican || defaultLang;
+					theVoice = voices[the];
+					console.log('theVoice', theVoice);
+				}
+			}
 
 			window.onload = function(){
 
 				setupSpeech();
 
-      	if ('speechSynthesis' in window) {
+				if ('speechSynthesis' in window) {
 					window.speechSynthesis.onvoiceschanged = setupSpeech;
 				}
 
@@ -128,19 +140,19 @@
 							cd.innerHTML = minleftStr + ':' + secleftStr;
 							var toSpeak = ((minleft > 0) ? minleft : '') + ((secleft != 0) ? ' ' + secleft : '');
 							if ( minleft > 1 && (secleft == 0 || secleft == 30) ) {
-								speak(toSpeak);
+								speak(toSpeak, 1);
 							}
 							if ( minleft == 1 && ( secleft % 15 == 0 ) ) {
-								speak(toSpeak);
+								speak(toSpeak, 1.2);
 							}
 							if ( minleft == 0 && ( secleft % 10 == 0 ) ) {
-								speak(toSpeak);
+								speak(toSpeak, 1.5);
 							}
 							if ( minleft == 0 && secleft < 10  && secleft > 0 ) {
-								speak(secleft);
+								speak(secleft, 1.8);
 							}
 							if ( minleft == 0 && secleft == 0 ) {
-								speak('START');
+								speak('START', 2);
 							}
 						}, 1000
 					);
