@@ -95,13 +95,13 @@
 
 				var sl = null;
 
-				function startcountdown(t) {
+				async function startcountdown(t) {
 					if (cdt) {
 						clearInterval(cdt);
 					}
 					var s = new Date();
 					var starttime = s.getTime()/1000 + t;
-					getScreenLock();
+					await getScreenLock();
 					cdt = setInterval(function() {
 							var n = new Date();
 							var now = n.getTime()/1000;
@@ -158,13 +158,13 @@
 					);
 				}
 
-				function startchronometer() {
+				async function startchronometer() {
 					if (cht) {
 						clearInterval(cht);
 					}
 					var s = new Date();
 					var starttime = s.getTime()/1000;
-					getScreenLock();
+					await getScreenLock();
 					cht = setInterval(function() {
 							var n = new Date();
 							var now = n.getTime()/1000;
@@ -184,27 +184,45 @@
 					cp = !cp;
 				}
 
-				function getScreenLock() {
-					if (navigator.requestWakeLock && !sl) {
-						sl = navigator.requestWakeLock('screen');
+				async function getScreenLock() {
+					if (!navigator.wakeLock) {
+						return;
+					}
+
+					try {
+						sl = await navigator.wakeLock.request();
+						console.log('Got screen lock.');
+					} catch (err) {
+						console.error(`${err.name}, ${err.message}`);
 					}
 				}
 
 				function releaseScreenLock() {
-					if (navigator.requestWakeLock && sl) {
-						sl.unlock();
+					if (!navigator.wakeLock || !sl) {
+						return;
 					}
+
+					sl.release();
+					console.log('Screen lock releasd.');
 				}
 
-				sb.onclick = function() {
-					startcountdown(300);
+				async function handleVisibilityChange() {
+					if (sl !== null && document.visibilityState === 'visible') {
+						await getScreenLock();
+					}
+				};
+
+				document.addEventListener('visibilitychange', handleVisibilityChange);
+
+				sb.onclick = async function() {
+					await startcountdown(300);
 				};
 
 				cb.onclick = function() {
 					clearInterval(cdt);
 					cd.innerHTML = '05:00';
-					sb.onclick = function() {
-						startcountdown(300);
+					sb.onclick = async function() {
+						await startcountdown(300);
 					};
 					sb.innerHTML = '5 min';
 					if ( !cht ) {
@@ -212,8 +230,8 @@
 					}
 				};
 
-				stb.onclick = function() {
-					startchronometer();
+				stb.onclick = async function() {
+					await startchronometer();
 					stb.onclick = function() {
 						pausechronometer();
 					};
@@ -223,8 +241,8 @@
 				ctb.onclick = function() {
 					clearInterval(cht);
 					ch.innerHTML = '00:00';
-					stb.onclick = function() {
-						startchronometer();
+					stb.onclick = async function() {
+						await startchronometer();
 					};
 					stb.innerHTML = 'start';
 					if (!cdt) {
