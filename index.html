@@ -101,7 +101,6 @@
 					}
 					var s = new Date();
 					var starttime = s.getTime()/1000 + t;
-					await getScreenLock();
 					cdt = setInterval(function() {
 							var n = new Date();
 							var now = n.getTime()/1000;
@@ -112,7 +111,6 @@
 								sb.onclick = function() {
 									startcountdown(300);
 								};
-								releaseScreenLock();
 								return;
 							}
 							if (secleft < 5*60) {
@@ -164,7 +162,6 @@
 					}
 					var s = new Date();
 					var starttime = s.getTime()/1000;
-					await getScreenLock();
 					cht = setInterval(function() {
 							var n = new Date();
 							var now = n.getTime()/1000;
@@ -184,36 +181,6 @@
 					cp = !cp;
 				}
 
-				async function getScreenLock() {
-					if (!navigator.wakeLock) {
-						return;
-					}
-
-					try {
-						sl = await navigator.wakeLock.request();
-						console.log('Got screen lock.');
-					} catch (err) {
-						console.error(`${err.name}, ${err.message}`);
-					}
-				}
-
-				function releaseScreenLock() {
-					if (!navigator.wakeLock || !sl) {
-						return;
-					}
-
-					sl.release();
-					console.log('Screen lock releasd.');
-				}
-
-				async function handleVisibilityChange() {
-					if (sl !== null && document.visibilityState === 'visible') {
-						await getScreenLock();
-					}
-				};
-
-				document.addEventListener('visibilitychange', handleVisibilityChange);
-
 				sb.onclick = async function() {
 					await startcountdown(300);
 				};
@@ -225,9 +192,6 @@
 						await startcountdown(300);
 					};
 					sb.innerHTML = '5 min';
-					if ( !cht ) {
-						releaseScreenLock();
-					}
 				};
 
 				stb.onclick = async function() {
@@ -245,12 +209,32 @@
 						await startchronometer();
 					};
 					stb.innerHTML = 'start';
-					if (!cdt) {
-						releaseScreenLock();
-					}
 				};
 
 			};
+
+			async function getScreenLock() {
+				if (!navigator.wakeLock) {
+					return;
+				}
+
+				try {
+					sl = await navigator.wakeLock.request();
+					console.log('Got screen lock.');
+				} catch (err) {
+					console.error(`${err.name}, ${err.message}`);
+				}
+			}
+
+			async function handleVisibilityChange() {
+				if (sl !== null && document.visibilityState === 'visible') {
+					await getScreenLock();
+				}
+			};
+
+			document.addEventListener('visibilitychange', handleVisibilityChange);
+
+			await getScreenLock();
 		</script>
 		<style>
 			* {
