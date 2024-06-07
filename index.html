@@ -42,7 +42,7 @@
 
 			var theVoice;
 
-			function setupSpeech(){
+			function setupSpeech() {
 				if (theVoice) return;
 				if ('speechSynthesis' in window) {
 					var voices = speechSynthesis.getVoices(),
@@ -52,17 +52,17 @@
 							foundAmerican,
 							defaultLang;
 					console.log(voices);
-					voices.forEach(function(voice, i){
-						if( (voice.lang == preferedLang) && !foundPrefered ) {
+					voices.forEach(function(voice, i) {
+						if  ( (voice.lang == preferedLang) && !foundPrefered ) {
 							foundPrefered = i;
 						}
-						if( (voice.lang == "en-GB" || voice.lang == "en_GB") && !foundBritish){
+						if ( (voice.lang == "en-GB" || voice.lang == "en_GB") && !foundBritish) {
 							foundBritish = i;
 						}
-						else if( (voice.lang == "en-US" || voice.lang == "en_US" || voice.lang == "en") && !foundAmerican){
+						else if ( (voice.lang == "en-US" || voice.lang == "en_US" || voice.lang == "en") && !foundAmerican) {
 							foundAmerican = i;
 						}
-						if(voice.default && !defaultLang){
+						if (voice.default && !defaultLang) {
 							defaultLang = i;
 						}
 					});
@@ -72,7 +72,7 @@
 				}
 			}
 
-			window.onload = function(){
+			window.onload = function() {
 
 				setupSpeech();
 
@@ -95,48 +95,48 @@
 
 				var sl = null;
 
-				function startcountdown(t){
-					if(cdt){
+				function startcountdown(t) {
+					if (cdt) {
 						clearInterval(cdt);
 					}
 					var s = new Date();
 					var starttime = s.getTime()/1000 + t;
 					getScreenLock();
-					cdt = setInterval(function(){
+					cdt = setInterval(function() {
 							var n = new Date();
 							var now = n.getTime()/1000;
 							var secleft = Math.round(starttime - now);
-							if(secleft<0){
+							if (secleft<0) {
 								sb.innerHTML = '5 min';
 								clearInterval(cdt);
-								sb.onclick = function(){
+								sb.onclick = function() {
 									startcountdown(300);
 								};
 								releaseScreenLock();
 								return;
 							}
-							if(secleft < 5*60){
+							if (secleft < 5*60) {
 								sb.innerHTML = '4 min';
-								sb.onclick = function(){
+								sb.onclick = function() {
 									startcountdown(4*60);
 								};
 							}
-							if(secleft < 4*60){
+							if (secleft < 4*60) {
 								sb.innerHTML = '2 min';
-								sb.onclick = function(){
+								sb.onclick = function() {
 									startcountdown(120);
 								};
 							}
-							if(secleft < 3*60){
+							if (secleft < 3*60) {
 								sb.innerHTML = '1 min';
-								sb.onclick = function(){
+								sb.onclick = function() {
 									startcountdown(60);
 								};
 							}
 							var minleft = Math.floor(secleft / 60);
 							secleft = secleft - minleft * 60;
-							var secleftStr = (secleft>9)?secleft:'0'+secleft;
-							var minleftStr = (minleft>9)?minleft:'0'+minleft;
+							var secleftStr = (secleft>9) ? secleft : '0'+secleft;
+							var minleftStr = (minleft>9) ? minleft : '0'+minleft;
 							cd.innerHTML = minleftStr + ':' + secleftStr;
 							var toSpeak = ((minleft > 0) ? minleft : '') + ((secleft != 0) ? ' ' + secleft : '');
 							if ( minleft > 1 && (secleft == 0 || secleft == 30) ) {
@@ -158,72 +158,72 @@
 					);
 				}
 
-				function startchronometer(){
-					if(cht){
+				function startchronometer() {
+					if (cht) {
 						clearInterval(cht);
 					}
 					var s = new Date();
 					var starttime = s.getTime()/1000;
 					getScreenLock();
-					cht = setInterval(function(){
+					cht = setInterval(function() {
 							var n = new Date();
 							var now = n.getTime()/1000;
 							var secleft = Math.round(now - starttime);
 							var minleft = Math.floor(secleft / 60);
 							secleft = secleft - minleft * 60;
-							secleft = (secleft>9)?secleft:'0'+secleft;
-							minleft = (minleft>9)?minleft:'0'+minleft;
-							if(!cp){
+							secleft = (secleft>9) ? secleft : '0'+secleft;
+							minleft = (minleft>9) ? minleft : '0'+minleft;
+							if (!cp) {
 								ch.innerHTML = minleft + ':' + secleft;
 							}
 						},250
 					);
 				}
 
-				function pausechronometer(){
+				function pausechronometer() {
 					cp = !cp;
 				}
 
-				function getScreenLock(){
-					if(navigator.requestWakeLock && !sl){
+				function getScreenLock() {
+					if (navigator.requestWakeLock && !sl) {
 						sl = navigator.requestWakeLock('screen');
 					}
 				}
 
-				function releaseScreenLock(){
-					if(navigator.requestWakeLock && sl){
+				function releaseScreenLock() {
+					if (navigator.requestWakeLock && sl) {
 						sl.unlock();
 					}
 				}
 
-				sb.onclick = function(){
+				sb.onclick = function() {
 					startcountdown(300);
 				};
 
-				cb.onclick = function(){
+				cb.onclick = function() {
 					clearInterval(cdt);
 					cd.innerHTML = '05:00';
-					sb.onclick = function(){
+					sb.onclick = function() {
 						startcountdown(300);
 					};
 					sb.innerHTML = '5 min';
-					if( !cht ){
+					if ( !cht ) {
 						releaseScreenLock();
 					}
 				};
 
-				stb.onclick = function(){
+				stb.onclick = function() {
 					startchronometer();
-					stb.onclick = function(){
+					stb.onclick = function() {
 						pausechronometer();
 					};
 					this.innerHTML = 'pause';
 				};
 
-				ctb.onclick = function(){
+				ctb.onclick = function() {
 					clearInterval(cht);
 					ch.innerHTML = '00:00';
-					stb.onclick = function(){
+					stb.onclick = function() {
 						startchronometer();
 					};
 					stb.innerHTML = 'start';
